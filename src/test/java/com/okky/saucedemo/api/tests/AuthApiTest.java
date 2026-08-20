@@ -25,13 +25,14 @@ public class AuthApiTest {
     @Test
     public void tc01_registerNewUser_shouldReturn201() {
         JSONObject payload = new JSONObject();
-        payload.put("name", "HW20 CI User " + UNIQUE_SUFFIX);
+        payload.put("nama", "HW20 CI User " + UNIQUE_SUFFIX);
         payload.put("email", EMAIL);
         payload.put("password", PASSWORD);
 
         Response response = authApiClient.register(payload.toString());
 
         assertEquals("Status code register harus 201 (Created)", 201, response.getStatusCode());
+        assertTrue("Response register harus success=true", response.jsonPath().getBoolean("success"));
         assertNotNull("Response body register tidak boleh null", response.getBody());
     }
 
@@ -45,7 +46,7 @@ public class AuthApiTest {
 
         assertEquals("Status code login harus 200 (OK)", 200, response.getStatusCode());
 
-        String token = response.jsonPath().getString("token");
+        String token = response.jsonPath().getString("data.token");
         assertTrue("Response login harus mengandung token JWT", token != null && !token.isEmpty());
 
         registeredToken = token;
