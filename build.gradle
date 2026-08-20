@@ -13,6 +13,7 @@ ext {
     cucumberVersion = '7.18.1'
     seleniumVersion = '4.24.0'
     junitVersion = '4.13.2'
+    restAssuredVersion = '5.4.0'
 }
 
 dependencies {
@@ -22,11 +23,15 @@ dependencies {
     // WebDriverManager - mengelola/auto-download chromedriver sesuai versi Chrome terpasang
     implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
 
-    // Cucumber - menulis & menjalankan skenario uji dalam format Gherkin
+    // Cucumber - menulis & menjalankan skenario uji UI Web dalam format Gherkin
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
 
-    // JUnit 4 - menjalankan test melalui Cucumber JUnit runner
+    // REST Assured - automation test untuk API (Siswa Management API)
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testImplementation 'org.json:json:20240303'
+
+    // JUnit 4 - menjalankan test API & UI (via Cucumber JUnit runner)
     testImplementation "junit:junit:${junitVersion}"
 }
 
