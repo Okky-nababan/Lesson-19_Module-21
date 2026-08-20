@@ -15,6 +15,10 @@ public class SiswaApiTest {
 
     private final SiswaApiClient siswaApiClient = new SiswaApiClient();
 
+    // nis harus 5-20 digit angka; pakai timestamp supaya unik tiap kali CI jalan
+    // (menghindari error "NIS sudah terdaftar" pada run berikutnya).
+    private static final String NIS = String.valueOf(System.currentTimeMillis());
+
     private static String createdSiswaId;
 
     private String token() {
@@ -25,14 +29,16 @@ public class SiswaApiTest {
     public void tc03_createSiswa_shouldReturn201() {
         JSONObject payload = new JSONObject();
         payload.put("nama", "Budi Santoso CI");
-        payload.put("nis", "20260820");
-        payload.put("kelas", "XII IPA 1");
+        payload.put("nis", NIS);
+        // Format kelas yang divalidasi API: <romawi 1-2 huruf>-<jurusan>-<nomor>, mis. X-IPA-1 / XI-IPA-1
+        payload.put("kelas", "X-IPA-1");
+        payload.put("jurusan", "IPA");
 
         Response response = siswaApiClient.create(token(), payload.toString());
 
         assertEquals("Status code create siswa harus 201 (Created)", 201, response.getStatusCode());
-        String id = response.jsonPath().getString("id");
-        assertNotNull("Response create siswa harus mengembalikan id", id);
+        String id = response.jsonPath().getString("data.id");
+        assertNotNull("Response create siswa harus mengembalikan data.id", id);
         createdSiswaId = id;
     }
 
@@ -45,9 +51,10 @@ public class SiswaApiTest {
     @Test
     public void tc05_updateSiswa_shouldReturn200() {
         JSONObject payload = new JSONObject();
-        payload.put("nama", "Budi Santoso CI (Updated)");
-        payload.put("nis", "20260820");
-        payload.put("kelas", "XII IPA 2");
+        payload.put("nama", "Budi Santoso CI Updated");
+        payload.put("nis", NIS);
+        payload.put("kelas", "X-IPA-2");
+        payload.put("jurusan", "IPA");
 
         Response response = siswaApiClient.update(token(), createdSiswaId, payload.toString());
 
@@ -58,8 +65,9 @@ public class SiswaApiTest {
     public void tc06_createSiswaWithEmptyName_shouldReturn400() {
         JSONObject payload = new JSONObject();
         payload.put("nama", "");
-        payload.put("nis", "20260821");
-        payload.put("kelas", "XII IPA 1");
+        payload.put("nis", NIS + "1");
+        payload.put("kelas", "X-IPA-1");
+        payload.put("jurusan", "IPA");
 
         Response response = siswaApiClient.create(token(), payload.toString());
 
