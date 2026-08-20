@@ -14,7 +14,10 @@ import static org.junit.Assert.assertTrue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AuthApiTest {
 
+    // Catatan: field "nama" divalidasi API hanya boleh huruf & spasi (tidak boleh angka),
+    // jadi keunikan data per-run CI cukup dijaga lewat email (boleh mengandung angka/simbol).
     private static final String UNIQUE_SUFFIX = String.valueOf(System.currentTimeMillis());
+    private static final String NAMA = "HW Automation CI Tester";
     private static final String EMAIL = "hw20.ci." + UNIQUE_SUFFIX + "@example.com";
     private static final String PASSWORD = "Password123!";
 
@@ -25,7 +28,7 @@ public class AuthApiTest {
     @Test
     public void tc01_registerNewUser_shouldReturn201() {
         JSONObject payload = new JSONObject();
-        payload.put("nama", "HW20 CI User " + UNIQUE_SUFFIX);
+        payload.put("nama", NAMA);
         payload.put("email", EMAIL);
         payload.put("password", PASSWORD);
 
