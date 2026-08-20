@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.okky.saucedemo'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    cucumberVersion = '7.18.1'
+    seleniumVersion = '4.24.0'
+    junitVersion = '4.13.2'
+}
+
+dependencies {
+    // Selenium WebDriver - dipakai oleh Page Object di src/main (BasePage, LoginPage, dst)
+    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+
+    // WebDriverManager - mengelola/auto-download chromedriver sesuai versi Chrome terpasang
+    implementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
+
+    // Cucumber - menulis & menjalankan skenario uji dalam format Gherkin
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+
+    // JUnit 4 - menjalankan test melalui Cucumber JUnit runner
+    testImplementation "junit:junit:${junitVersion}"
+}
+
+test {
+    useJUnit()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+    systemProperty 'cucumber.plugin', 'pretty, html:build/reports/cucumber/cucumber-report.html, json:build/reports/cucumber/cucumber-report.json'
+}
+
+tasks.register('runCucumberTests', Test) {
+    description = 'Menjalankan seluruh skenario Cucumber (login SauceDemo) dan menghasilkan HTML report'
+    group = 'verification'
+    useJUnit()
+    testLogging.showStandardStreams = true
+}
